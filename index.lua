@@ -156,6 +156,7 @@ function install()
 	end	
 	Screen.debugPrint(0,140,"Installing 3DSX...", white, TOP_SCREEN)
 	if not updated then
+		System.deleteFile(appexepath)
 		Network.renameFile(downloadedexe,appexepath)
 	end	
 	Screen.debugPrint(0,160,"DONE! Press A/B to exit!", green, TOP_SCREEN)
