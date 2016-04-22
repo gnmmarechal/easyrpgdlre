@@ -147,7 +147,7 @@ function install()
 		end
 		Screen.debugPrint(0,100,"Installing SMDH...", white, TOP_SCREEN)
 		if not updated then
-			void System.renameFile(downloadedsmdh,appsmdhpath)
+			System.renameFile(downloadedsmdh,appsmdhpath)
 		end
 	end
 	Screen.debugPrint(0,120,"Downloading 3DSX...", white, TOP_SCREEN)
