@@ -92,6 +92,7 @@ end
 function runoncevars()
 	--gotvars = 0
 	updated = 0
+	skipped = 0
 end
 
 --Input functions
@@ -133,17 +134,32 @@ function checkSMDH()
 	end	
 end
 function install()
-	if checkSMDH() then
+	if checkSMDH() or skipped == 1 then
 		Screen.debugPrint(0,60,"SMDH Icon Exists!", green, TOP_SCREEN)
 		Screen.debugPrint(0,80,"Skipping SMDH download...", white, TOP_SCREEN)
 		Screen.debugPrint(0,100,"Skipping SMDH installation...", white, TOP_SCREEN)
+		skipped = 1
 	else
 		Screen.debugPrint(0,60,"SMDH not found!", red, TOP_SCREEN)
 		Screen.debugPrint(0,80,"Downloading SMDH...", red)
 		if not updated then
 			Network.downloadFile(serversmdhpath,downloadedsmdh)
 		end
+		Screen.debugPrint(0,100,"Installing SMDH...", white, TOP_SCREEN)
+		if not updated then
+			void System.renameFile(downloadedsmdh,appsmdhpath)
+		end
 	end
+	Screen.debugPrint(0,120,"Downloading 3DSX...", white, TOP_SCREEN)
+	if not updated then
+		Network.downloadFile(serverexepath,downloadedexe)
+	end	
+	Screen.debugPrint(0,140,"Installing 3DSX...", white, TOP_SCREEN)
+	if not updated then
+		Network.renameFile(downloadedexe,appexepath)
+	end	
+	Screen.debugPrint(0,160,"DONE! Press A/B to exit!", green, TOP_SCREEN)
+	updated = 1
 end
 
 --UI Screens
