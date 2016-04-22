@@ -30,6 +30,8 @@ appinstallname = "easyrpg-player"
 appinstallpath = consolehbdir..appinstallname.."/"
 appexepath = appinstallpath..selfname..".3dsx"
 appsmdhpath = appinstallpath..selfname..".smdh"
+downloadedexe = selfpath..appinstallname..".3dsx"
+downloadedsmdh = selfpath..appinstallname..".smdh"
 
 --Server strings (some vars are declared by functions after reading the strings from the server)
 serverpath = "http://gs2012.pe.hu/3ds/"..selfname.."/"
@@ -116,11 +118,11 @@ end
 
 --Installer functions
 function precleanup()
-	if System.doesFileExist(selfpath..appinstallname..".3dsx") then
-		System.deleteFile(selfpath..appinstallname..".3dsx")
+	if System.doesFileExist(downloadedexe) then
+		System.deleteFile(downloadedexe)
 	end
-	if System.doesFileExist(selfpath..appinstallname..".smdh") then
-		System.deleteFile(selfpath..appinstallname..".smdh")
+	if System.doesFileExist(downloadedsmdh) then
+		System.deleteFile(downloadedsmdh)
 	end
 end
 function checkSMDH()
@@ -138,6 +140,9 @@ function install()
 	else
 		Screen.debugPrint(0,60,"SMDH not found!", red, TOP_SCREEN)
 		Screen.debugPrint(0,80,"Downloading SMDH...", red)
+		if not updated then
+			Network.downloadFile(serversmdhpath,downloadedsmdh)
+		end
 	end
 end
 
