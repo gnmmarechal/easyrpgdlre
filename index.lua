@@ -91,10 +91,10 @@ end
 
 function runoncevars()
 	--gotvars = 0
-	updated = 0
-	skipped = 0
-end
 
+end
+updated = 0
+skipped = 0
 --Input functions
 function inputscr(newscr, inputkey)
 	if Controls.check(pad,inputkey) and not Controls.check(oldpad,inputkey) then
@@ -137,7 +137,7 @@ function checkSMDH()
 	end	
 end
 function install()
-	if checkSMDH() then
+	if checkSMDH() == 1 then
 		Screen.debugPrint(0,60,"SMDH Icon Exists!", green, TOP_SCREEN)
 		Screen.debugPrint(0,80,"Skipping SMDH download...", white, TOP_SCREEN)
 		Screen.debugPrint(0,100,"Skipping SMDH installation...", white, TOP_SCREEN)
