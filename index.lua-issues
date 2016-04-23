@@ -73,8 +73,8 @@ end
 function clear()
 	Screen.waitVblankStart()
 	Screen.refresh()
---	Screen.clear(TOP_SCREEN)
---	Screen.clear(BOTTOM_SCREEN)
+	Screen.clear(TOP_SCREEN)
+	Screen.clear(BOTTOM_SCREEN)
 end 
 
 function flip()
@@ -105,8 +105,8 @@ function inputscr(newscr, inputkey)
 	end	
 end
 
-function nextscr(skrin)
-	inputscr(skrin, KEY_A)
+function nextscr(newscr)
+	inputscr(newscr, KEY_A)
 end
 
 function checkquit()
@@ -228,14 +228,14 @@ while true do
 	pad = Controls.read()
 	bottomscreen(iswifion())
 	if scr == 2 then
-		installer()
+		--installer()
 	end	
 	if scr == 0 then
 		errorscreen()
 	end
 	if scr == 1 then
-		firstscreen()
-		--installer()
+		--firstscreen()
+		installer()
 	end
 
 	iswifion()
