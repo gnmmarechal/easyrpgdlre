@@ -20,7 +20,7 @@ versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionst
 versionrelno = 1
 selfname = "easyrpgdlre"
 selfpath = consolehbdir..selfname.."/"
-selfexepath = selfpath.."/"..selfname..".3dsx"
+selfexepath = selfpath..selfname..".3dsx"
 selfstring = "EasyRPG Updater : RE v."..versionstring
 selfauthor = "gnmmarechal"
 
@@ -28,8 +28,8 @@ selfauthor = "gnmmarechal"
 appname = "EasyRPG 3DS"
 appinstallname = "easyrpg-player"
 appinstallpath = consolehbdir..appinstallname.."/"
-appexepath = appinstallpath..selfname..".3dsx"
-appsmdhpath = appinstallpath..selfname..".smdh"
+appexepath = appinstallpath..appinstallname..".3dsx"
+appsmdhpath = appinstallpath..appinstallname..".smdh"
 downloadedexe = selfpath..appinstallname..".3dsx"
 downloadedsmdh = selfpath..appinstallname..".smdh"
 
@@ -228,6 +228,10 @@ while true do
 	clear()
 	pad = Controls.read()
 	bottomscreen(iswifion())
+	if scr == 2 and loop == 1 then
+		installer()
+		waitloop()
+	end	
 	if scr == 0 and loop == 1 then
 		errorscreen()
 		waitloop()
@@ -236,10 +240,7 @@ while true do
 		firstscreen()
 		waitloop()
 	end
-	if scr == 2 and loop == 1 then
-		installer()
-		waitloop()
-	end
+
 	iswifion()
 	flip()
 end
