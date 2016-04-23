@@ -101,11 +101,13 @@ function inputscr(newscr, inputkey)
 		if newscr == -1 then
 			quit()
 		end
+		Screen.clear(TOP_SCREEN)
 		scr = newscr
 	end	
 end
 
 function nextscr(skrin)
+	
 	inputscr(skrin, KEY_A)
 end
 
@@ -137,34 +139,35 @@ function checkSMDH()
 	end	
 end
 function install()
-	if checkSMDH() == 1 then
-		Screen.debugPrint(0,60,"SMDH Icon Exists!", green, TOP_SCREEN)
-		Screen.debugPrint(0,80,"Skipping SMDH download...", white, TOP_SCREEN)
-		Screen.debugPrint(0,100,"Skipping SMDH installation...", white, TOP_SCREEN)
+	if checkSMDH() == 1 and not smdhnot == 1 then
+		debugWrite(0,60,"SMDH Icon Exists!", green, TOP_SCREEN)
+		debugWrite(0,80,"Skipping SMDH download...", white, TOP_SCREEN)
+		debugWrite(0,100,"Skipping SMDH installation...", white, TOP_SCREEN)
 		skipped = 1
 	else
-		Screen.debugPrint(0,60,"SMDH not found!", red, TOP_SCREEN)
-		Screen.debugPrint(0,80,"Downloading SMDH...", red, TOP_SCREEN)
+		smdhnot = 1
+		debugWrite(0,60,"SMDH not found!", red, TOP_SCREEN)
+		debugWrite(0,80,"Downloading SMDH...", red, TOP_SCREEN)
 		if updated == 0 then
 			Network.downloadFile(serversmdhpath,downloadedsmdh)
 		end
-		Screen.debugPrint(0,100,"Installing SMDH...", white, TOP_SCREEN)
+		debugWrite(0,100,"Installing SMDH...", white, TOP_SCREEN)
 		if updated == 0 then
 			System.renameFile(downloadedsmdh,appsmdhpath)
 		end
 	end
-	Screen.debugPrint(0,120,"Downloading 3DSX...", white, TOP_SCREEN)
+	debugWrite(0,120,"Downloading 3DSX...", white, TOP_SCREEN)
 	if updated == 0 then
 		Network.downloadFile(serverexepath,downloadedexe)
 	end	
-	Screen.debugPrint(0,140,"Installing 3DSX...", white, TOP_SCREEN)
+	debugWrite(0,140,"Installing 3DSX...", white, TOP_SCREEN)
 	if updated == 0 then
 		if System.doesFileExist(appexepath) then
 			System.deleteFile(appexepath)
 		end	
 		System.renameFile(downloadedexe,appexepath)
 	end	
-	Screen.debugPrint(0,160,"DONE! Press A/B to exit!", green, TOP_SCREEN)
+	debugWrite(0,160,"DONE! Press A/B to exit!", green, TOP_SCREEN)
 	updated = 1
 end
 
@@ -210,12 +213,28 @@ end
 
 function installer() --scr == 2
 	head()
-	Screen.debugPrint(0,40,"Started Installation...", white, TOP_SCREEN)
+	debugWrite(0,40,"Started Installation...", white, TOP_SCREEN)
 	install()
 	checkquit()
 	endquit()
 end
 
+function debugWrite(x,y,text,color,display)
+	i = 0
+	
+	while i < 2 do
+		Screen.refresh()
+		Screen.debugPrint(x,y,text,color,display)
+		Screen.waitVblankStart()
+		Screen.flip()
+		i = i + 1
+		
+	end
+	
+	if updated == 1 then
+		Screen.debugPrint(x,y,text,color,display)
+	end
+end
 --Main loop
 
 runoncevars()
