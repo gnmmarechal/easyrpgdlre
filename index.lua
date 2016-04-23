@@ -73,8 +73,8 @@ end
 function clear()
 	Screen.waitVblankStart()
 	Screen.refresh()
---	Screen.clear(TOP_SCREEN)
---	Screen.clear(BOTTOM_SCREEN)
+	Screen.clear(TOP_SCREEN)
+	Screen.clear(BOTTOM_SCREEN)
 end 
 
 function flip()
