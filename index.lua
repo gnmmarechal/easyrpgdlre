@@ -219,7 +219,7 @@ skipped = 0
 while true do
 	clear()
 	pad = Controls.read()
-	--bottomscreen(iswifion())
+	bottomscreen(iswifion())
 	if scr == 2 then
 		installer()
 	end	
