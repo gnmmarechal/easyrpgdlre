@@ -154,6 +154,7 @@ function install()
 		if updated == 0 then
 			System.renameFile(downloadedsmdh,appsmdhpath)
 		end
+		checkedicon = 1
 	end
 	debugWrite(0,120,"Downloading 3DSX...", white, TOP_SCREEN)
 	if updated == 0 then
@@ -175,10 +176,10 @@ end
 function head() -- Head of all screens
 	if headflip == 1 then
 		debugWrite(0,0,selfstring, white, TOP_SCREEN)
-		debugWrite(0,20,"========================================================", red, TOP_SCREEN)	
+		debugWrite(0,20,"=====================================", red, TOP_SCREEN)	
 	end
 	Screen.debugPrint(0,0,selfstring, white, TOP_SCREEN)
-	Screen.debugPrint(0,20,"========================================================", red, TOP_SCREEN)	
+	Screen.debugPrint(0,20,"=====================================", red, TOP_SCREEN)	
 end
 
 function errorscreen() --scr == 0
