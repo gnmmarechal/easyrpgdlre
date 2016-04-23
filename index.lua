@@ -130,21 +130,17 @@ function precleanup()
 end
 function checkSMDH()
 	if System.doesFileExist(appsmdhpath) then
+		iconexist = 1
 		return 1
 	else
+		iconexist = 0
 		return 0
 	end	
 end
 function install()
 	headflip = 1
 	head()
-	if checkSMDH() == 1 and checkedicon==0 then
-		debugWrite(0,60,"SMDH Icon Exists!", green, TOP_SCREEN)
-		debugWrite(0,80,"Skipping SMDH download...", white, TOP_SCREEN)
-		debugWrite(0,100,"Skipping SMDH installation...", white, TOP_SCREEN)
-		skipped = 1
-		checkedicon = 1
-	else
+	if iconexist == 0 then
 		debugWrite(0,60,"SMDH not found!", red, TOP_SCREEN)
 		debugWrite(0,80,"Downloading SMDH...", red, TOP_SCREEN)
 		if updated == 0 then
@@ -154,6 +150,13 @@ function install()
 		if updated == 0 then
 			System.renameFile(downloadedsmdh,appsmdhpath)
 		end
+		checkedicon = 0	
+
+	else
+		debugWrite(0,60,"SMDH Icon Exists!", green, TOP_SCREEN)
+		debugWrite(0,80,"Skipping SMDH download...", white, TOP_SCREEN)
+		debugWrite(0,100,"Skipping SMDH installation...", white, TOP_SCREEN)
+		skipped = 1
 		checkedicon = 1
 	end
 	debugWrite(0,120,"Downloading 3DSX...", white, TOP_SCREEN)
@@ -176,10 +179,10 @@ end
 function head() -- Head of all screens
 	if headflip == 1 then
 		debugWrite(0,0,selfstring, white, TOP_SCREEN)
-		debugWrite(0,20,"=====================================", red, TOP_SCREEN)	
+		debugWrite(0,20,"==============================", red, TOP_SCREEN)	
 	end
 	Screen.debugPrint(0,0,selfstring, white, TOP_SCREEN)
-	Screen.debugPrint(0,20,"=====================================", red, TOP_SCREEN)	
+	Screen.debugPrint(0,20,"==============================", red, TOP_SCREEN)	
 end
 
 function errorscreen() --scr == 0
@@ -247,6 +250,7 @@ runoncevars()
 iswifion()
 servergetVars()
 precleanup()
+checkSMDH()
 
 while true do
 	clear()
