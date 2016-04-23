@@ -71,7 +71,7 @@ end
 
 --System functions
 function clear()
-	Screen.waitVblankStart()
+
 	Screen.refresh()
 	Screen.clear(TOP_SCREEN)
 	Screen.clear(BOTTOM_SCREEN)
@@ -79,7 +79,7 @@ end
 
 function flip()
 	Screen.flip()
-
+	Screen.waitVblankStart()
 	oldpad = pad
 end
 function waitloop()
@@ -139,6 +139,8 @@ function checkSMDH()
 	end	
 end
 function install()
+	headflip = 1
+	head()
 	if checkSMDH() == 1 and not smdhnot == 1 then
 		debugWrite(0,60,"SMDH Icon Exists!", green, TOP_SCREEN)
 		debugWrite(0,80,"Skipping SMDH download...", white, TOP_SCREEN)
@@ -174,6 +176,10 @@ end
 --UI Screens
 
 function head() -- Head of all screens
+	if headflip == 1 then
+		debugWrite(0,0,selfstring, white, TOP_SCREEN)
+		debugWrite(0,20,"===============================", red, TOP_SCREEN)	
+	end
 	Screen.debugPrint(0,0,selfstring, white, TOP_SCREEN)
 	Screen.debugPrint(0,20,"===============================", red, TOP_SCREEN)	
 end
@@ -219,20 +225,22 @@ function installer() --scr == 2
 	endquit()
 end
 
+--Prints text
+
 function debugWrite(x,y,text,color,display)
-	i = 0
-	
-	while i < 2 do
-		Screen.refresh()
-		Screen.debugPrint(x,y,text,color,display)
-		Screen.waitVblankStart()
-		Screen.flip()
-		i = i + 1
-		
-	end
-	
 	if updated == 1 then
 		Screen.debugPrint(x,y,text,color,display)
+	else
+		i = 0
+	
+		while i < 2 do
+			Screen.refresh()
+			Screen.debugPrint(x,y,text,color,display)
+			Screen.waitVblankStart()
+			Screen.flip()
+			i = i + 1
+		
+		end
 	end
 end
 --Main loop
