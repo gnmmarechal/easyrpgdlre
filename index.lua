@@ -127,6 +127,9 @@ function precleanup()
 	end
 end
 function checkSMDH()
+	if skipped == 1 then
+		return 1
+	end
 	if System.doesFileExist(appsmdhpath) then
 		return 1
 	else
@@ -134,7 +137,7 @@ function checkSMDH()
 	end	
 end
 function install()
-	if checkSMDH() or skipped == 1 then
+	if checkSMDH() then
 		Screen.debugPrint(0,60,"SMDH Icon Exists!", green, TOP_SCREEN)
 		Screen.debugPrint(0,80,"Skipping SMDH download...", white, TOP_SCREEN)
 		Screen.debugPrint(0,100,"Skipping SMDH installation...", white, TOP_SCREEN)
@@ -142,22 +145,24 @@ function install()
 	else
 		Screen.debugPrint(0,60,"SMDH not found!", red, TOP_SCREEN)
 		Screen.debugPrint(0,80,"Downloading SMDH...", red)
-		if not updated then
+		if updated == 0 then
 			Network.downloadFile(serversmdhpath,downloadedsmdh)
 		end
 		Screen.debugPrint(0,100,"Installing SMDH...", white, TOP_SCREEN)
-		if not updated then
+		if updated == 0 then
 			System.renameFile(downloadedsmdh,appsmdhpath)
 		end
 	end
 	Screen.debugPrint(0,120,"Downloading 3DSX...", white, TOP_SCREEN)
-	if not updated then
+	if updated == 0 then
 		Network.downloadFile(serverexepath,downloadedexe)
 	end	
 	Screen.debugPrint(0,140,"Installing 3DSX...", white, TOP_SCREEN)
-	if not updated then
-		System.deleteFile(appexepath)
-		Network.renameFile(downloadedexe,appexepath)
+	if updated == 0 then
+		if System.doesFileExist(appexepath) then
+			System.deleteFile(appexepath)
+		end	
+		System.renameFile(downloadedexe,appexepath)
 	end	
 	Screen.debugPrint(0,160,"DONE! Press A/B to exit!", green, TOP_SCREEN)
 	updated = 1
