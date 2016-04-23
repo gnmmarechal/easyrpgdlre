@@ -89,12 +89,7 @@ function quit()
 	System.exit()
 end
 
-function runoncevars()
-	--gotvars = 0
 
-end
-updated = 0
-skipped = 0
 --Input functions
 function inputscr(newscr, inputkey)
 	if Controls.check(pad,inputkey) and not Controls.check(oldpad,inputkey) then
@@ -135,37 +130,6 @@ function checkSMDH()
 	else
 		return 0
 	end	
-end
-function install()
-	if checkSMDH() == 1 then
-		Screen.debugPrint(0,60,"SMDH Icon Exists!", green, TOP_SCREEN)
-		Screen.debugPrint(0,80,"Skipping SMDH download...", white, TOP_SCREEN)
-		Screen.debugPrint(0,100,"Skipping SMDH installation...", white, TOP_SCREEN)
-		skipped = 1
-	else
-		Screen.debugPrint(0,60,"SMDH not found!", red, TOP_SCREEN)
-		Screen.debugPrint(0,80,"Downloading SMDH...", red)
-		if updated == 0 then
-			Network.downloadFile(serversmdhpath,downloadedsmdh)
-		end
-		Screen.debugPrint(0,100,"Installing SMDH...", white, TOP_SCREEN)
-		if updated == 0 then
-			System.renameFile(downloadedsmdh,appsmdhpath)
-		end
-	end
-	Screen.debugPrint(0,120,"Downloading 3DSX...", white, TOP_SCREEN)
-	if updated == 0 then
-		Network.downloadFile(serverexepath,downloadedexe)
-	end	
-	Screen.debugPrint(0,140,"Installing 3DSX...", white, TOP_SCREEN)
-	if updated == 0 then
-		if System.doesFileExist(appexepath) then
-			System.deleteFile(appexepath)
-		end	
-		System.renameFile(downloadedexe,appexepath)
-	end	
-	Screen.debugPrint(0,160,"DONE! Press A/B to exit!", green, TOP_SCREEN)
-	updated = 1
 end
 
 --UI Screens
@@ -211,34 +175,59 @@ end
 function installer() --scr == 2
 	head()
 	Screen.debugPrint(0,40,"Started Installation...", white, TOP_SCREEN)
-	install()
+	if checkSMDH() == 1 then
+		Screen.debugPrint(0,60,"SMDH Icon Exists!", green, TOP_SCREEN)
+		Screen.debugPrint(0,80,"Skipping SMDH download...", white, TOP_SCREEN)
+		Screen.debugPrint(0,100,"Skipping SMDH installation...", white, TOP_SCREEN)
+		skipped = 1
+	else
+		Screen.debugPrint(0,60,"SMDH not found!", red, TOP_SCREEN)
+		Screen.debugPrint(0,80,"Downloading SMDH...", red)
+		if updated == 0 then
+			Network.downloadFile(serversmdhpath,downloadedsmdh)
+		end
+		Screen.debugPrint(0,100,"Installing SMDH...", white, TOP_SCREEN)
+		if updated == 0 then
+			System.renameFile(downloadedsmdh,appsmdhpath)
+		end
+	end
+	Screen.debugPrint(0,120,"Downloading 3DSX...", white, TOP_SCREEN)
+	if updated == 0 then
+		Network.downloadFile(serverexepath,downloadedexe)
+	end	
+	Screen.debugPrint(0,140,"Installing 3DSX...", white, TOP_SCREEN)
+	if updated == 0 then
+		if System.doesFileExist(appexepath) then
+			System.deleteFile(appexepath)
+		end	
+		System.renameFile(downloadedexe,appexepath)
+	end	
+	Screen.debugPrint(0,160,"DONE! Press A/B to exit!", green, TOP_SCREEN)
+	updated = 1
 	checkquit()
 	endquit()
 end
 
 --Main loop
 
-runoncevars()
 iswifion()
 servergetVars()
 precleanup()
+updated = 0
+skipped = 0
 
 while true do
-	loop = 1
 	clear()
 	pad = Controls.read()
-	bottomscreen(iswifion())
-	if scr == 2 and loop == 1 then
+	--bottomscreen(iswifion())
+	if scr == 2 then
 		installer()
-		waitloop()
 	end	
-	if scr == 0 and loop == 1 then
+	if scr == 0 then
 		errorscreen()
-		waitloop()
 	end
-	if scr == 1 and loop == 1 then
+	if scr == 1 then
 		firstscreen()
-		waitloop()
 	end
 
 	iswifion()
