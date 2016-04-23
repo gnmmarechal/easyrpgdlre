@@ -15,7 +15,7 @@ oldpad = Controls.read()
 versionmajor = 1
 versionminor = 0
 versionrev = 0
-versionstage = "Alpha"
+versionstage = "RC" --Alpha, Beta, Nightly, RC (Release Candidate), Stable
 versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionstage
 versionrelno = 1
 selfname = "easyrpgdlre"
@@ -91,7 +91,7 @@ end
 
 function runoncevars()
 	--gotvars = 0
-
+	checkedicon = 0
 end
 updated = 0
 skipped = 0
@@ -129,9 +129,6 @@ function precleanup()
 	end
 end
 function checkSMDH()
-	if skipped == 1 then
-		return 1
-	end
 	if System.doesFileExist(appsmdhpath) then
 		return 1
 	else
@@ -141,13 +138,13 @@ end
 function install()
 	headflip = 1
 	head()
-	if checkSMDH() == 1 and not smdhnot == 1 then
+	if checkSMDH() == 1 and checkedicon==0 then
 		debugWrite(0,60,"SMDH Icon Exists!", green, TOP_SCREEN)
 		debugWrite(0,80,"Skipping SMDH download...", white, TOP_SCREEN)
 		debugWrite(0,100,"Skipping SMDH installation...", white, TOP_SCREEN)
 		skipped = 1
+		checkedicon = 1
 	else
-		smdhnot = 1
 		debugWrite(0,60,"SMDH not found!", red, TOP_SCREEN)
 		debugWrite(0,80,"Downloading SMDH...", red, TOP_SCREEN)
 		if updated == 0 then
@@ -178,10 +175,10 @@ end
 function head() -- Head of all screens
 	if headflip == 1 then
 		debugWrite(0,0,selfstring, white, TOP_SCREEN)
-		debugWrite(0,20,"===============================", red, TOP_SCREEN)	
+		debugWrite(0,20,"========================================================", red, TOP_SCREEN)	
 	end
 	Screen.debugPrint(0,0,selfstring, white, TOP_SCREEN)
-	Screen.debugPrint(0,20,"===============================", red, TOP_SCREEN)	
+	Screen.debugPrint(0,20,"========================================================", red, TOP_SCREEN)	
 end
 
 function errorscreen() --scr == 0
