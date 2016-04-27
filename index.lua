@@ -14,8 +14,8 @@ oldpad = Controls.read()
 --App details
 versionmajor = 1
 versionminor = 0
-versionrev = 0
-versionstage = "RC" --Alpha, Beta, Nightly, RC (Release Candidate), Stable
+versionrev = 1
+versionstage = "Stable" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
 versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionstage
 versionrelno = 1
 selfname = "easyrpgdlre"
@@ -30,15 +30,19 @@ appinstallname = "easyrpg-player"
 appinstallpath = consolehbdir..appinstallname.."/"
 appexepath = appinstallpath..appinstallname..".3dsx"
 appsmdhpath = appinstallpath..appinstallname..".smdh"
+appxmlpath = appinstallpath..appinstallname..".xml"
 downloadedexe = selfpath..appinstallname..".3dsx"
 downloadedsmdh = selfpath..appinstallname..".smdh"
+downloadedzip = selfpath..appinstallname..".zip"
 
 --Server strings (some vars are declared by functions after reading the strings from the server)
-serverpath = "http://gs2012.pe.hu/3ds/"..selfname.."/"
+serverpath = "http://gs2012.xyz/3ds/"..selfname.."/"
 
 servergetexepath = serverpath.."3dsx.txt"
 servergetsmdhpath = serverpath.."smdh.txt"
 servergetcommit = serverpath..appinstallname..".txt"
+servergetjenkins = serverpath.."jenkins.txt"
+servergetjenkinsver = serverpath.."jenkinsver.txt"
 
 --serverexepath = serverpath..appinstallname..".3dsx"
 --serversmdhpath = serverpath..appinstallname..".smdh"
@@ -65,7 +69,9 @@ function servergetVars()
 	if iswifion() == 1 then
 		serverexepath = Network.requestString(servergetexepath)
 		serversmdhpath = Network.requestString(servergetsmdhpath)
-		servercommit = Network.requestString(servergetcommit)
+		servercommit = Network.requestString(servergetcommit) --Deprecated as of 1.0.1
+		serverjenkins = Network.requestString(servergetjenkins) --gets the URL for the ZIP of the latest Jenkins build
+		serverjenkinsver = Network.requestString(servergetjenkinsver) --gets the string "LATEST"
 	end
 end
 
@@ -127,6 +133,9 @@ function precleanup()
 	if System.doesFileExist(downloadedsmdh) then
 		System.deleteFile(downloadedsmdh)
 	end
+	if System.doesFileExist(downloadedzip) then
+		System.deleteFile(downloadedzip)
+	end
 end
 function checkSMDH()
 	if System.doesFileExist(appsmdhpath) then
@@ -136,6 +145,26 @@ function checkSMDH()
 		iconexist = 0
 		return 0
 	end	
+end
+function installnew()
+	headflip = 1
+	head()
+	debugWrite(0,60,"Downloading ZIP...", white, TOP_SCREEN)
+	if updated == 0 then
+		Network.downloadFile(serverjenkins,downloadedzip)
+	end
+	debugWrite(0,80,"Cleaning old files...", red, TOP_SCREEN)
+	if updated == 0 then
+		System.deleteFile(appsmdhpath)
+		System.deleteFile(appexepath)
+		System.deleteFile(appxmlpath)
+	end
+	debugWrite(0,100,"Extracting to path...", white, TOP_SCREEN)
+	if updated == 0 then
+		System.extractZIP(downloadedzip,appinstallpath)
+	end
+	debugWrite(0,120,"DONE! Press A/B to exit!", green, TOP_SCREEN)
+	updated = 1
 end
 function install()
 	headflip = 1
@@ -202,7 +231,7 @@ end
 function bottomscreen(no) -- if no = 1, the original, regular screen will show. If not, an error-screen will come up.
 	lowhead()
 	if no == 1 then	
-		Screen.debugPrint(0,20,"Latest 3DSX: "..servercommit, green, BOTTOM_SCREEN)
+		Screen.debugPrint(0,20,"Latest 3DSX: "..serverjenkinsver, green, BOTTOM_SCREEN)
 		Screen.debugPrint(0,40,"Author: gnmmarechal", white, BOTTOM_SCREEN)
 		Screen.debugPrint(0,60,"Special Thanks: Rinnegatamante", white, BOTTOM_SCREEN)
 	else
@@ -221,7 +250,7 @@ end
 function installer() --scr == 2
 	head()
 	debugWrite(0,40,"Started Installation...", white, TOP_SCREEN)
-	install()
+	installnew()
 	checkquit()
 	endquit()
 end
