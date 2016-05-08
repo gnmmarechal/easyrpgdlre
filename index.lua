@@ -13,7 +13,7 @@ oldpad = Controls.read()
 
 --App details
 versionmajor = 1
-versionminor = 0
+versionminor = 1
 versionrev = 1
 versionstage = "Stable" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
 versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionstage
@@ -41,7 +41,8 @@ serverpath = "http://gs2012.xyz/3ds/"..selfname.."/"
 servergetexepath = serverpath.."3dsx.txt"
 servergetsmdhpath = serverpath.."smdh.txt"
 servergetcommit = serverpath..appinstallname..".txt"
-servergetjenkins = serverpath.."jenkins.txt"
+servergetjenkinslast = serverpath.."jenkins.txt"
+servergetjenkinsstable = serverpath.."jenkinsstable.txt"
 servergetjenkinsver = serverpath.."jenkinsver.txt"
 
 --serverexepath = serverpath..appinstallname..".3dsx"
@@ -52,6 +53,10 @@ servergetjenkinsver = serverpath.."jenkinsver.txt"
 white = Color.new(255,255,255)
 green = Color.new(0,240,32)
 red = Color.new(255,0,0)
+
+-- Store variables
+storeserverpath = "http://gs2012.xyz/3ds/"..selfname.."/store/"
+storescr = 0
 
 -- Server/network functions
 function iswifion()
@@ -70,7 +75,8 @@ function servergetVars()
 		serverexepath = Network.requestString(servergetexepath)
 		serversmdhpath = Network.requestString(servergetsmdhpath)
 		servercommit = Network.requestString(servergetcommit) --Deprecated as of 1.0.1
-		serverjenkins = Network.requestString(servergetjenkins) --gets the URL for the ZIP of the latest Jenkins build
+		serverjenkinslast = Network.requestString(servergetjenkinslast) --gets the URL for the ZIP of the latest Jenkins build
+		serverjenkinsstable = Network.requestString(servergetjenkinsstable)
 		serverjenkinsver = Network.requestString(servergetjenkinsver) --gets the string "LATEST"
 	end
 end
@@ -166,7 +172,7 @@ function installnew()
 	debugWrite(0,120,"DONE! Press A/B to exit!", green, TOP_SCREEN)
 	updated = 1
 end
-function install()
+function install() --Deprecated code, no longer used.
 	headflip = 1
 	head()
 	if iconexist == 0 then
@@ -242,17 +248,36 @@ end
 
 function firstscreen() -- scr == 1
 	head()
-	Screen.debugPrint(0,40,"Press A to update EasyRPG or B to quit", white, TOP_SCREEN)
-	nextscr(2)
+	Screen.debugPrint(0,40,"Welcome to EasyRPG 3DS Updater: RE!", white, TOP_SCREEN)
+	Screen.debugPrint(0,60,"Please select an option:", white, TOP_SCREEN)
+	Screen.debugPrint(0,80,"A)Update to latest stable build", white, TOP_SCREEN)
+	Screen.debugPrint(0,100,"Y)Update to latest build", white, TOP_SCREEN)
+	Screen.debugPrint(0,120,"B)Quit to HBL", white, TOP_SCREEN)
+	inputscr(2, KEY_A)
+	inputscr(4, KEY_Y)
 	checkquit()
 end
 
-function installer() --scr == 2
+function installer() --scr == 2 / scr == 4
 	head()
 	debugWrite(0,40,"Started Installation...", white, TOP_SCREEN)
 	installnew()
 	checkquit()
 	endquit()
+end
+
+function store() --scr == 3
+	head()
+	loadstore()
+end
+
+
+
+--Store-related functions
+function loadstore()
+end
+function deleteOldStore()
+	
 end
 
 --Prints text
@@ -286,14 +311,21 @@ while true do
 	pad = Controls.read()
 	bottomscreen(iswifion())
 	if scr == 2 then
+		serverjenkins = serverjenkinsstable
 		installer()
 	end	
+	if scr == 4 then
+		serverjenkins = serverjenkinslast
+		installer()
+	end
+--	if scr == 3 then
+--		store()
+--	end
 	if scr == 0 then
 		errorscreen()
 	end
 	if scr == 1 then
 		firstscreen()
-		--installer()
 	end
 
 	iswifion()
