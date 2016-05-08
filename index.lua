@@ -251,9 +251,9 @@ function firstscreen() -- scr == 1
 	head()
 	Screen.debugPrint(0,40,"Welcome to EasyRPG 3DS Updater: RE!", white, TOP_SCREEN)
 	Screen.debugPrint(0,100,"Please select an option:", white, TOP_SCREEN)
-	Screen.debugPrint(0,120,"A)Update to latest stable build", white, TOP_SCREEN)
-	Screen.debugPrint(0,140,"Y)Update to latest build", white, TOP_SCREEN)
-	Screen.debugPrint(0,160,"B)Quit to HBL", white, TOP_SCREEN)
+	Screen.debugPrint(0,120,"A) Update to latest stable build", white, TOP_SCREEN)
+	Screen.debugPrint(0,140,"Y) Update to latest build", white, TOP_SCREEN)
+	Screen.debugPrint(0,160,"B) Quit to HBL", white, TOP_SCREEN)
 	inputscr(2, KEY_A)
 	inputscr(4, KEY_Y)
 	if debugmode == 1 then
