@@ -64,7 +64,7 @@ storechoice = 1
 lastchoice = 3
 YumeNikkiZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/YumeNikki.zip"
 flowZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/flow.ZIP"
-IbZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/test.zep"
+IbZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/Ib.zep"
 gamezip = selfpath.."game.zip"
 
 -- Server/network functions
@@ -280,7 +280,6 @@ function installer() --scr == 2 / scr == 4
 	debugWrite(0,40,"Started Installation...", white, TOP_SCREEN)
 	installnew()
 	checkquit()
-	endquit()
 end
 
 function store() --scr == 5
@@ -326,7 +325,7 @@ function installgame()
 	if updated == 0 then
 		System.extractZIP(gamezip,appinstallpath)
 	end
-	debugWrite(0,100,"DONE! Press A/B to exit!", green, TOP_SCREEN)
+	debugWrite(0,100,"DONE! Press B to exit!", green, TOP_SCREEN)
 	updated = 1	
 
 end
