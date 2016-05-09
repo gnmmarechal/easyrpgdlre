@@ -2,6 +2,7 @@
 --Author: gnmmarechal
 --Runs on Lua Player Plus 3DS
 --On this version of the Updater Script, more of the code is server-hosted. For example, the location from where the app is downloaded is now obtained from a text file on a server. This makes it unnecessary to update the app to get latest URLs
+--Some code runs from store.lua. Store.lua is the storefront for RPG Maker 2000/2003 Games. Make sure the store.lua is from a trustworthy location.
 
 --Some variables
 System.currentDirectory("/")
@@ -11,18 +12,19 @@ consoleerror = 0
 scr = 1
 oldpad = Controls.read()
 debugmode = 1
+SVer = 1
 
 --App details
 versionmajor = 2
-versionminor = 1
-versionrev = 1
+versionminor = 0
+versionrev = 0
 versionstage = "Alpha" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
 versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionstage
 versionrelno = 1
 selfname = "easyrpgdlre"
 selfpath = consolehbdir..selfname.."/"
 selfexepath = selfpath..selfname..".3dsx"
-selfstring = "EasyRPG Updater : RE v."..versionstring
+selfstring = "EasyRPG Updater : RE v."..versionstring.."-"..SVer
 selfauthor = "gnmmarechal"
 
 --Affected app details
@@ -59,7 +61,8 @@ red = Color.new(255,0,0)
 storeserverpath = "http://gs2012.xyz/3ds/"..selfname.."/store/"
 serverstorescriptpath = storeserverpath.."store.lua"
 storescriptpath = selfpath.."store.lua"
-storescr = 0
+storescr = 1
+
 
 -- Server/network functions
 function iswifion()
@@ -119,6 +122,15 @@ function inputscr(newscr, inputkey)
 		Screen.clear(TOP_SCREEN)
 		scr = newscr
 	end	
+end
+function storeinputscr(newstorescr, inputkey)
+	if Controls.check(pad,inputkey) and not Controls.check(oldpad,inputkey) then
+		if newstorescr == -1 then
+			scr = 1
+		end
+		Screen.clear(TOP_SCREEN)
+		storescr = newstorescr
+	end
 end
 
 function nextscr(skrin)
@@ -275,7 +287,7 @@ function installer() --scr == 2 / scr == 4
 end
 
 function store() --scr == 3
-	head()
+	
 	loadstore()
 end
 
