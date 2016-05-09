@@ -14,8 +14,8 @@ debugmode = 1
 
 --App details
 versionmajor = 2
-versionminor = 1
-versionrev = 1
+versionminor = 0
+versionrev = 0
 versionstage = "Alpha" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
 versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionstage
 versionrelno = 1
@@ -61,11 +61,15 @@ serverstorescriptpath = storeserverpath.."store.lua"
 storescriptpath = selfpath.."store.lua"
 storerun = 0
 storechoice = 1
-lastchoice = 3
-YumeNikkiZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/YumeNikki.zip"
-flowZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/flow.ZIP"
+lastchoice = 4
+YumeNikkiZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/YumeNikki.zep"
+flowZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/flow.zep"
 IbZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/Ib.zep"
+TestGameThreeZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/TestGame2003.zep" 
+TestGameZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/TestGame2000.zep"
 gamezip = selfpath.."game.zip"
+onstore = 1
+storeclear = 0
 
 -- Server/network functions
 function iswifion()
@@ -134,6 +138,10 @@ end
 
 function checkquit()
 	inputscr(-1, KEY_B)
+end
+
+function checkrestart()
+	inputscr(-3, KEY_R)
 end
 
 function endquit()
@@ -280,38 +288,47 @@ function installer() --scr == 2 / scr == 4
 	debugWrite(0,40,"Started Installation...", white, TOP_SCREEN)
 	installnew()
 	checkquit()
+	checkrestart()
 end
 
 function store() --scr == 5
 	head()
-	if storechoice == 1 then
-		Screen.debugPrint(0,40,".flow",green,TOP_SCREEN)
-		remotezipgame = flowZIP
-	else
-		Screen.debugPrint(0,40,".flow",white,TOP_SCREEN)
-	end
-	if storechoice == 2 then
-		Screen.debugPrint(0,60,"Ib",green,TOP_SCREEN)
-		remotezipgame = IbZIP
-	else
-		Screen.debugPrint(0,60,"Ib",white,TOP_SCREEN)
+	if 1 == 1 then
+		if storechoice == 1 then
+			Screen.debugPrint(0,40,".flow",green,TOP_SCREEN)
+			remotezipgame = flowZIP
+		else
+			Screen.debugPrint(0,40,".flow",white,TOP_SCREEN)
+		end
+		if storechoice == 2 then
+			Screen.debugPrint(0,60,"Ib",green,TOP_SCREEN)
+			remotezipgame = IbZIP
+		else
+			Screen.debugPrint(0,60,"Ib",white,TOP_SCREEN)
+		end	
+		if storechoice == 3 then
+			Screen.debugPrint(0,80,"Yume Nikki",green,TOP_SCREEN)
+			remotezipgame = YumeNikkiZIP
+		else
+			Screen.debugPrint(0,80,"Yume Nikki",white,TOP_SCREEN)
+		end
+		if storechoice == 4 then
+			Screen.debugPrint(0,100,"TestGame-2000",green,TOP_SCREEN)
+			remotezipgame = TestGameZIP
+		else
+			Screen.debugPrint(0,100,"TestGame-2000",white,TOP_SCREEN)
+		end	
 	end	
-	if storechoice == 3 then
-		Screen.debugPrint(0,80,"Yume Nikki",green,TOP_SCREEN)
-		remotezipgame = YumeNikkiZIP
-	else
-		Screen.debugPrint(0,80,"Yume Nikki",white,TOP_SCREEN)
-	end
 	storedpad()
 	inputscr(6,KEY_A)
 end
 
 function storeinstaller()
-	head()
+	head()	
 	debugWrite(0,40,"Starting installation...", white, TOP_SCREEN)
 	installgame()
 	checkquit()
-	endquit()
+	checkrestart()
 end
 
 function installgame()
@@ -324,6 +341,7 @@ function installgame()
 	debugWrite(0,80,"Extracting to path...", white, TOP_SCREEN)
 	if updated == 0 then
 		System.extractZIP(gamezip,appinstallpath)
+		System.deleteFile(gamezip)
 	end
 	debugWrite(0,100,"DONE! Press B to exit!", green, TOP_SCREEN)
 	updated = 1	
@@ -374,7 +392,9 @@ while true do
 	clear()
 	pad = Controls.read()
 	bottomscreen(iswifion())
-
+	if scr == 6 then
+		storeinstaller()
+	end
 	if scr == 2 then
 		serverjenkins = serverjenkinsstable
 		installer()
@@ -392,11 +412,12 @@ while true do
 	if scr == 5 then
 		store()
 	end
-	if scr == 6 then
-		storeinstaller()
-	end
+
 	if scr == -2 then
 		error("Debug Break")
+	end
+	if scr == -3 then
+		error("Program ended")
 	end
 
 	iswifion()
