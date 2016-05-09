@@ -13,10 +13,10 @@ oldpad = Controls.read()
 debugmode = 1
 
 --App details
-versionmajor = 1
+versionmajor = 2
 versionminor = 1
 versionrev = 1
-versionstage = "Stable" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
+versionstage = "Alpha" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
 versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionstage
 versionrelno = 1
 selfname = "easyrpgdlre"
@@ -57,6 +57,8 @@ red = Color.new(255,0,0)
 
 -- Store variables
 storeserverpath = "http://gs2012.xyz/3ds/"..selfname.."/store/"
+serverstorescriptpath = storeserverpath.."store.lua"
+storescriptpath = selfpath.."store.lua"
 storescr = 0
 
 -- Server/network functions
@@ -238,9 +240,9 @@ end
 function bottomscreen(no) -- if no = 1, the original, regular screen will show. If not, an error-screen will come up.
 	lowhead()
 	if no == 1 then	
-		Screen.debugPrint(0,20,"Latest 3DSX: "..serverjenkinsver, green, BOTTOM_SCREEN)
-		Screen.debugPrint(0,40,"Author: gnmmarechal", white, BOTTOM_SCREEN)
-		Screen.debugPrint(0,60,"Special Thanks: Rinnegatamante", white, BOTTOM_SCREEN)
+		--Screen.debugPrint(0,20,"Latest 3DSX: "..serverjenkinsver, green, BOTTOM_SCREEN) -- This is pretty much useless now, as builds are automated.
+		Screen.debugPrint(0,20,"Author: gnmmarechal", white, BOTTOM_SCREEN)
+		Screen.debugPrint(0,40,"Special Thanks: Rinnegatamante", white, BOTTOM_SCREEN)
 	else
 		Screen.debugPrint(0,20,"Internet connection failed.", red, BOTTOM_SCREEN)
 	end
@@ -253,9 +255,11 @@ function firstscreen() -- scr == 1
 	Screen.debugPrint(0,100,"Please select an option:", white, TOP_SCREEN)
 	Screen.debugPrint(0,120,"A) Update to latest stable build", white, TOP_SCREEN)
 	Screen.debugPrint(0,140,"Y) Update to latest build", white, TOP_SCREEN)
-	Screen.debugPrint(0,160,"B) Quit to HBL", white, TOP_SCREEN)
+	Screen.debugPrint(0,160,"X) Open the RPG Maker Game Store", white, TOP_SCREEN)
+	Screen.debugPrint(0,180,"B) Quit to HBL", white, TOP_SCREEN)
 	inputscr(2, KEY_A)
 	inputscr(4, KEY_Y)
+	inputscr(5, KEY_X)
 	if debugmode == 1 then
 		inputscr(-2, KEY_L)
 	end
@@ -279,9 +283,18 @@ end
 
 --Store-related functions
 function loadstore()
+	if firstload == 0 then
+		deleteOldStore()
+		downloadStoreScript()
+		firstload = 1
+	end
+	require(storescriptpath)
 end
 function deleteOldStore()
-	
+	System.deleteFile(storescriptpath)
+end
+function downloadStoreScript()
+	Network.downloadFile(serverstorescriptpath, storescriptpath)
 end
 
 --Prints text
@@ -314,6 +327,9 @@ while true do
 	clear()
 	pad = Controls.read()
 	bottomscreen(iswifion())
+	if scr == 5 then
+		store()
+	end
 	if scr == 2 then
 		serverjenkins = serverjenkinsstable
 		installer()
@@ -322,9 +338,9 @@ while true do
 		serverjenkins = serverjenkinslast
 		installer()
 	end
---	if scr == 3 then
---		store()
---	end
+	if scr == 3 then
+		store()
+	end
 	if scr == 0 then
 		errorscreen()
 	end
