@@ -2,7 +2,6 @@
 --Author: gnmmarechal
 --Runs on Lua Player Plus 3DS
 --On this version of the Updater Script, more of the code is server-hosted. For example, the location from where the app is downloaded is now obtained from a text file on a server. This makes it unnecessary to update the app to get latest URLs
---Some code runs from store.lua. Store.lua is the storefront for RPG Maker 2000/2003 Games. Make sure the store.lua is from a trustworthy location.
 
 --Some variables
 System.currentDirectory("/")
@@ -12,19 +11,18 @@ consoleerror = 0
 scr = 1
 oldpad = Controls.read()
 debugmode = 1
-SVer = 1
 
 --App details
 versionmajor = 2
-versionminor = 0
-versionrev = 0
+versionminor = 1
+versionrev = 1
 versionstage = "Alpha" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
 versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionstage
 versionrelno = 1
 selfname = "easyrpgdlre"
 selfpath = consolehbdir..selfname.."/"
 selfexepath = selfpath..selfname..".3dsx"
-selfstring = "EasyRPG Updater : RE v."..versionstring.."-"..SVer
+selfstring = "EasyRPG Updater : RE v."..versionstring
 selfauthor = "gnmmarechal"
 
 --Affected app details
@@ -61,8 +59,13 @@ red = Color.new(255,0,0)
 storeserverpath = "http://gs2012.xyz/3ds/"..selfname.."/store/"
 serverstorescriptpath = storeserverpath.."store.lua"
 storescriptpath = selfpath.."store.lua"
-storescr = 1
-
+storerun = 0
+storechoice = 1
+lastchoice = 3
+YumeNikkiZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/YumeNikki.zip"
+flowZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/flow.ZIP"
+IbZIP = "http://gs2012.xyz/3ds/easyrpgdlre/store/games/test.zep"
+gamezip = selfpath.."game.zip"
 
 -- Server/network functions
 function iswifion()
@@ -123,15 +126,6 @@ function inputscr(newscr, inputkey)
 		scr = newscr
 	end	
 end
-function storeinputscr(newstorescr, inputkey)
-	if Controls.check(pad,inputkey) and not Controls.check(oldpad,inputkey) then
-		if newstorescr == -1 then
-			scr = 1
-		end
-		Screen.clear(TOP_SCREEN)
-		storescr = newstorescr
-	end
-end
 
 function nextscr(skrin)
 	
@@ -156,6 +150,9 @@ function precleanup()
 	end
 	if System.doesFileExist(downloadedzip) then
 		System.deleteFile(downloadedzip)
+	end
+	if System.doesFileExist(gamezip) then
+		System.deleteFile(gamezip)
 	end
 end
 function checkSMDH()
@@ -286,33 +283,72 @@ function installer() --scr == 2 / scr == 4
 	endquit()
 end
 
-function store() --scr == 3
-	
-	loadstore()
-end
-
-
-
---Store-related functions
-function loadstore()
-	if firstload == 0 then
-		deleteOldStore()
-		downloadStoreScript()
-		firstload = 1
+function store() --scr == 5
+	head()
+	if storechoice == 1 then
+		Screen.debugPrint(0,40,".flow",green,TOP_SCREEN)
+		remotezipgame = flowZIP
+	else
+		Screen.debugPrint(0,40,".flow",white,TOP_SCREEN)
 	end
-	require(storescriptpath)
+	if storechoice == 2 then
+		Screen.debugPrint(0,60,"Ib",green,TOP_SCREEN)
+		remotezipgame = IbZIP
+	else
+		Screen.debugPrint(0,60,"Ib",white,TOP_SCREEN)
+	end	
+	if storechoice == 3 then
+		Screen.debugPrint(0,80,"Yume Nikki",green,TOP_SCREEN)
+		remotezipgame = YumeNikkiZIP
+	else
+		Screen.debugPrint(0,80,"Yume Nikki",white,TOP_SCREEN)
+	end
+	storedpad()
+	inputscr(6,KEY_A)
 end
-function deleteOldStore()
-	System.deleteFile(storescriptpath)
+
+function storeinstaller()
+	head()
+	debugWrite(0,40,"Starting installation...", white, TOP_SCREEN)
+	installgame()
+	checkquit()
+	endquit()
 end
-function downloadStoreScript()
-	Network.downloadFile(serverstorescriptpath, storescriptpath)
+
+function installgame()
+	headflip = 1
+	head()
+	debugWrite(0,60,"Downloading ZIP...", white, TOP_SCREEN)
+	if updated == 0 then
+		Network.downloadFile(remotezipgame,gamezip)
+	end
+	debugWrite(0,80,"Extracting to path...", white, TOP_SCREEN)
+	if updated == 0 then
+		System.extractZIP(gamezip,appinstallpath)
+	end
+	debugWrite(0,100,"DONE! Press A/B to exit!", green, TOP_SCREEN)
+	updated = 1	
+
+end
+--Store-related functions
+function storedpad()
+	if Controls.check(pad,KEY_DUP) and not Controls.check(oldpad,KEY_DUP) then
+		storechoice = storechoice - 1
+		if storechoice == 0 then
+			storechoice = lastchoice
+		end
+	elseif Controls.check(pad,KEY_DDOWN) and not Controls.check(oldpad,KEY_DDOWN) then 
+		storechoice = storechoice + 1
+		if storechoice == lastchoice + 1 then
+			storechoice = 1
+		end
+	end 
 end
 
 --Prints text
 
 function debugWrite(x,y,text,color,display)
-	if updated == 1 then
+	if updated == 1 or downloadcompleted == 1 then
 		Screen.debugPrint(x,y,text,color,display)
 	else
 		i = 0
@@ -339,9 +375,7 @@ while true do
 	clear()
 	pad = Controls.read()
 	bottomscreen(iswifion())
-	if scr == 5 then
-		store()
-	end
+
 	if scr == 2 then
 		serverjenkins = serverjenkinsstable
 		installer()
@@ -350,14 +384,17 @@ while true do
 		serverjenkins = serverjenkinslast
 		installer()
 	end
-	if scr == 3 then
-		store()
-	end
 	if scr == 0 then
 		errorscreen()
 	end
 	if scr == 1 then
 		firstscreen()
+	end
+	if scr == 5 then
+		store()
+	end
+	if scr == 6 then
+		storeinstaller()
 	end
 	if scr == -2 then
 		error("Debug Break")
