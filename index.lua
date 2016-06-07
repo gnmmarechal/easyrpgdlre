@@ -90,7 +90,7 @@ function servergetVars()
 		servercommit = Network.requestString(servergetcommit) --Deprecated as of 1.0.1
 		serverjenkinslast = Network.requestString(servergetjenkinslast) --gets the URL for the ZIP of the latest Jenkins build
 		serverjenkinsstable = Network.requestString(servergetjenkinsstable)
-		serverjenkinsver = Network.requestString(servergetjenkinsver) --gets the string "LATEST"
+		serverjenkinsver = Network.requestString(servergetjenkinsver) --gets the string "LATEST", obsolete as of now.
 	end
 end
 
@@ -117,6 +117,9 @@ end
 function runoncevars()
 	--gotvars = 0
 	checkedicon = 0
+	if System.getModel() == 2 or System.getModel() == 4 then
+		System.setCpuSpeed(NEW_3DS_CLOCK)
+	end	
 end
 updated = 0
 skipped = 0
