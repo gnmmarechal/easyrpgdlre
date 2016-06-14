@@ -15,7 +15,7 @@ debugmode = 1
 --App details
 versionmajor = 2
 versionminor = 0
-versionrev = 0
+versionrev = 1
 versionstage = "Alpha" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
 versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionstage
 versionrelno = 1
@@ -45,6 +45,7 @@ servergetcommit = serverpath..appinstallname..".txt"
 servergetjenkinslast = serverpath.."jenkins.txt"
 servergetjenkinsstable = serverpath.."jenkinsstable.txt"
 servergetjenkinsver = serverpath.."jenkinsver.txt"
+servergetjenkinsverstable = serverpath.."jenkinsverstable.txt"
 
 --serverexepath = serverpath..appinstallname..".3dsx"
 --serversmdhpath = serverpath..appinstallname..".smdh"
@@ -90,7 +91,10 @@ function servergetVars()
 		servercommit = Network.requestString(servergetcommit) --Deprecated as of 1.0.1
 		serverjenkinslast = Network.requestString(servergetjenkinslast) --gets the URL for the ZIP of the latest Jenkins build
 		serverjenkinsstable = Network.requestString(servergetjenkinsstable)
-		serverjenkinsver = Network.requestString(servergetjenkinsver) --gets the string "LATEST", obsolete as of now.
+		serverjenkinsver = Network.requestString(servergetjenkinsver) --gets the build number from Jenkins
+		serverjenkinsbuild = Network.requestString(serverjenkinsver) --gets the build number from Jenkins.
+		serverjenkinsverstable = Network.requestString(servergetjenkinsverstable)
+		serverjenkinsbuildstable = Network.requestString(serverjenkinsverstable)
 	end
 end
 
@@ -260,9 +264,9 @@ end
 function bottomscreen(no) -- if no = 1, the original, regular screen will show. If not, an error-screen will come up.
 	lowhead()
 	if no == 1 then	
-		--Screen.debugPrint(0,20,"Latest 3DSX: "..serverjenkinsver, green, BOTTOM_SCREEN) -- This is pretty much useless now, as builds are automated.
-		Screen.debugPrint(0,20,"Author: gnmmarechal", white, BOTTOM_SCREEN)
-		Screen.debugPrint(0,40,"Special Thanks: Rinnegatamante", white, BOTTOM_SCREEN)
+		Screen.debugPrint(0,20,"Latest Stable 3DSX: Build "..serverjenkinsbuildstable, green, BOTTOM_SCREEN)
+		Screen.debugPrint(0,40,"Latest 3DSX: Build "..serverjenkinsbuild, green, BOTTOM_SCREEN)		
+		Screen.debugPrint(0,60,"Special Thanks: Rinnegatamante", white, BOTTOM_SCREEN)
 	else
 		Screen.debugPrint(0,20,"Internet connection failed.", red, BOTTOM_SCREEN)
 	end
