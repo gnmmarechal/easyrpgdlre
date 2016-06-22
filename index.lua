@@ -15,8 +15,8 @@ debugmode = 1
 --App details
 versionmajor = 2
 versionminor = 0
-versionrev = 1
-versionstage = "Alpha" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
+versionrev = 2
+versionstage = "Stable" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
 versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionstage
 versionrelno = 1
 selfname = "easyrpgdlre"
@@ -249,7 +249,7 @@ end
 
 function errorscreen() --scr == 0
 	head()
-	Screen.debugPrint(0,40,"An error has ocurred.", white, TOP_SCREEN)
+	Screen.debugPrint(0,40,"An error has occurred.", white, TOP_SCREEN)
 	Screen.debugPrint(0,60,"Please refer to the documentation.", white, TOP_SCREEN)
 	Screen.debugPrint(0,80,"Error code: "..consoleerror, red, TOP_SCREEN)
 	Screen.debugPrint(0,100,"Press A/B to quit.", white, TOP_SCREEN)
