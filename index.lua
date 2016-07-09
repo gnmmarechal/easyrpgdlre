@@ -14,9 +14,9 @@ debugmode = 1
 
 --App details
 versionmajor = 2
-versionminor = 0
-versionrev = 2
-versionstage = "Stable" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
+versionminor = 1
+versionrev = 0
+versionstage = "Alpha" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
 versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionstage
 versionrelno = 1
 selfname = "easyrpgdlre"
@@ -36,6 +36,14 @@ downloadedexe = selfpath..appinstallname..".3dsx"
 downloadedsmdh = selfpath..appinstallname..".smdh"
 downloadedzip = selfpath..appinstallname..".zip"
 
+--CIA Stuff
+ezrpguniqueid = 0x0ABBA000
+downloadedcia = "/easyrpg.cia"
+if System.checkBuild() == 2 then
+	iscia = 0
+else
+	iscia = 1
+end
 --Server strings (some vars are declared by functions after reading the strings from the server)
 serverpath = "http://gs2012.xyz/3ds/"..selfname.."/"
 
@@ -46,6 +54,9 @@ servergetjenkinslast = serverpath.."jenkins.txt"
 servergetjenkinsstable = serverpath.."jenkinsstable.txt"
 servergetjenkinsver = serverpath.."jenkinsver.txt"
 servergetjenkinsverstable = serverpath.."jenkinsverstable.txt"
+
+servergetjenkinslastcia = serverpath.."jenkinscia.txt"
+servergetjenkinsstablecia = serverpath.."jenkinsstablecia.txt"
 
 --serverexepath = serverpath..appinstallname..".3dsx"
 --serversmdhpath = serverpath..appinstallname..".smdh"
@@ -95,6 +106,8 @@ function servergetVars()
 		serverjenkinsbuild = Network.requestString(serverjenkinsver) --gets the build number from Jenkins.
 		serverjenkinsverstable = Network.requestString(servergetjenkinsverstable)
 		serverjenkinsbuildstable = Network.requestString(serverjenkinsverstable)
+		serverjenkinsbuildcia = Network.requestString(servergetjenkinslastcia)
+		serverjenkinsbuildstablecia = Network.requestString(servergetjenkinsstablecia)
 	end
 end
 
@@ -199,6 +212,21 @@ function installnew()
 	debugWrite(0,120,"DONE! Press A/B to exit!", green, TOP_SCREEN)
 	updated = 1
 end
+
+function installcia()
+	headflip = 1
+	head()
+	debugWrite(0,60,"Downloading CIA...", white, TOP_SCREEN)
+	if updated == 0 then
+		Network.downloadFile(serverjenkinscia,downloadedcia)
+	end
+	debugWrite(0,100,"Installing CIA...", white, TOP_SCREEN)
+	if updated == 0 then
+		System.installCIA(downloadedcia, SDMC)
+	end
+	debugWrite(0,120,"DONE! Press A/B to exit!", green, TOP_SCREEN)
+	updated = 1
+end
 function install() --Deprecated code, no longer used.
 	headflip = 1
 	head()
@@ -264,8 +292,8 @@ end
 function bottomscreen(no) -- if no = 1, the original, regular screen will show. If not, an error-screen will come up.
 	lowhead()
 	if no == 1 then	
-		Screen.debugPrint(0,20,"Latest Stable 3DSX: Build "..serverjenkinsbuildstable, green, BOTTOM_SCREEN)
-		Screen.debugPrint(0,40,"Latest 3DSX: Build "..serverjenkinsbuild, green, BOTTOM_SCREEN)		
+		Screen.debugPrint(0,20,"Latest Stable: Build "..serverjenkinsbuildstable, green, BOTTOM_SCREEN)
+		Screen.debugPrint(0,40,"Latest: Build "..serverjenkinsbuild, green, BOTTOM_SCREEN)		
 		Screen.debugPrint(0,60,"Special Thanks: Rinnegatamante", white, BOTTOM_SCREEN)
 	else
 		Screen.debugPrint(0,20,"Internet connection failed.", red, BOTTOM_SCREEN)
@@ -293,7 +321,11 @@ end
 function installer() --scr == 2 / scr == 4
 	head()
 	debugWrite(0,40,"Started Installation...", white, TOP_SCREEN)
-	installnew()
+	if iscia == 1 then
+		installcia()
+	else
+		installnew()
+	end
 	checkquit()
 	checkrestart()
 end
@@ -404,10 +436,12 @@ while true do
 	end
 	if scr == 2 then
 		serverjenkins = serverjenkinsstable
+		serverjenkinscia = serverjenkinsbuildcia
 		installer()
 	end	
 	if scr == 4 then
 		serverjenkins = serverjenkinslast
+		serverjenkinscia = serverjenkinsbuildstablecia
 		installer()
 	end
 	if scr == 0 then
