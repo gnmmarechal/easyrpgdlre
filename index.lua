@@ -220,11 +220,11 @@ function installcia()
 	if updated == 0 then
 		Network.downloadFile(serverjenkinscia,downloadedcia)
 	end
-	debugWrite(0,100,"Installing CIA...", white, TOP_SCREEN)
+	debugWrite(0,80,"Installing CIA...", white, TOP_SCREEN)
 	if updated == 0 then
 		System.installCIA(downloadedcia, SDMC)
 	end
-	debugWrite(0,120,"DONE! Press A/B to exit!", green, TOP_SCREEN)
+	debugWrite(0,100,"DONE! Press A/B to exit!", green, TOP_SCREEN)
 	updated = 1
 end
 function install() --Deprecated code, no longer used.
@@ -327,6 +327,7 @@ function installer() --scr == 2 / scr == 4
 		installnew()
 	end
 	checkquit()
+	endquit()
 	checkrestart()
 end
 
