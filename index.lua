@@ -15,8 +15,8 @@ debugmode = 1
 --App details
 versionmajor = 2
 versionminor = 1
-versionrev = 0
-versionstage = "Alpha" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
+versionrev = 1
+versionstage = "Stable" --Alpha, Beta, Nightly, RC (Release Candidate), Stable, etc
 versionstring = versionmajor.."."..versionminor.."."..versionrev.." "..versionstage
 versionrelno = 1
 selfname = "easyrpgdlre"
@@ -36,6 +36,18 @@ downloadedexe = selfpath..appinstallname..".3dsx"
 downloadedsmdh = selfpath..appinstallname..".smdh"
 downloadedzip = selfpath..appinstallname..".zip"
 
+--Auto-updater stuff
+serverpath = "http://gs2012.xyz/3ds/"..selfname.."/"
+updatedciaurl = serverpath.."easyrpgdlre.cia"
+downloadedupdatecia = "/easyrpgdlre.cia"
+releaseno = 1
+
+function selfupdate()
+	if iscia == 1 then
+			Network.downloadFile(updatedciaurl,downloadedupdatecia)
+			
+	end
+end
 --CIA Stuff
 ezrpguniqueid = 0x0ABBA000
 downloadedcia = "/easyrpg.cia"
@@ -45,7 +57,7 @@ else
 	iscia = 1
 end
 --Server strings (some vars are declared by functions after reading the strings from the server)
-serverpath = "http://gs2012.xyz/3ds/"..selfname.."/"
+
 
 servergetexepath = serverpath.."3dsx.txt"
 servergetsmdhpath = serverpath.."smdh.txt"
@@ -218,6 +230,9 @@ function installcia()
 	head()
 	debugWrite(0,60,"Downloading CIA...", white, TOP_SCREEN)
 	if updated == 0 then
+		if System.doesFileExist(downloadedcia) then
+			System.deleteFile(downloadedcia)
+		end
 		Network.downloadFile(serverjenkinscia,downloadedcia)
 	end
 	debugWrite(0,80,"Installing CIA...", white, TOP_SCREEN)
