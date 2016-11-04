@@ -16,5 +16,12 @@ file_put_contents("easyrpg-stable.cia", file_get_contents("https://ci.easyrpg.or
 echo "\r\nDownloading version information..."."<br>";
 file_put_contents("ver.txt", file_get_contents("https://ci.easyrpg.org/job/player-3ds/lastSuccessfulBuild/buildNumber"));
 file_put_contents("verstable.txt", file_get_contents("https://ci.easyrpg.org/job/player-3ds/lastStableBuild/buildNumber"));
+
+
+//Download the latest updater from GitHub (for DevMode)
+echo "\r\nDownloading updater..."."<br";
+file_put_contents("cure-nightly.lua", file_get_contents("https://raw.githubusercontent.com/gnmmarechal/easyrpgdlre/master/index-server.lua"));
+
+
 echo "\r\nDone! http://gs2012.xyz"."<br>";
 ?>
